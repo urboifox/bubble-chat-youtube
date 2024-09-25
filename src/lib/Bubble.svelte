@@ -1,10 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { fade, slide } from "svelte/transition";
+  import { blur, slide } from "svelte/transition";
   import { shiftMessages } from "./messagesStore";
+  import { options } from "./optionsStore";
 
   export let editable: boolean = false;
-  export let isLast: boolean = false;
+  export let visible: boolean = false;
   let bubble: HTMLDivElement;
 
   $: if (!editable) {
@@ -19,9 +20,10 @@
 </script>
 
 <div
+  data-rtl={$options.dir === "rtl"}
   class="bubble"
-  class:isLast
-  out:fade
+  class:visible
+  out:blur={{ duration: 1000 }}
   in:slide
   contenteditable={editable}
   spellcheck={false}
@@ -37,20 +39,31 @@
 <style>
   .bubble {
     background-color: #fff;
+    position: relative;
     color: #000;
     width: max-content;
     max-width: 500px;
     border-radius: 0.6rem;
-    font-family: "Cairo", sans-serif;
+    line-height: 1.5;
     word-break: break-word;
     font-size: 1.5rem;
     font-weight: 400;
-    border-bottom-left-radius: 0;
     padding: 0.4rem 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    border-bottom-left-radius: 0;
+  }
+
+  .bubble[data-rtl="true"] {
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0.6rem;
+  }
+
+  .visible {
+    opacity: 1;
   }
 
   .bubble:focus {
     outline: none;
   }
 </style>
-

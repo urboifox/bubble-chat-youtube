@@ -6,31 +6,37 @@
     updateMessage,
     getLastMessage,
     createNewMessage,
-    removeLastMessage,
   } from "./messagesStore";
   import { options } from "./optionsStore";
-
-  let bubbles: HTMLDivElement;
 
   onMount(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const lastMessage = getLastMessage();
+      const lastMessageElement = event.target as HTMLDivElement;
+
       if (event.key === "Enter" && !event.shiftKey) {
-        if (lastMessage?.editing) {
+        if (lastMessageElement.innerText.length <= 0) {
+          event.preventDefault();
+        } else if (lastMessage?.editing) {
           updateMessage(lastMessage.id, { editing: false });
+          createNewMessage();
         }
         return;
       }
 
-      if (event.key === "Escape") {
-        if (lastMessage?.editing) {
-          removeLastMessage();
+      if (event.key === "Backspace") {
+        if (lastMessage?.editing && lastMessageElement.innerText.length <= 1) {
+          updateMessage(lastMessage.id, { visible: false });
         }
         return;
       }
 
-      if (!lastMessage?.editing && event.key.length === 1) {
-        createNewMessage();
+      if (event.key.length === 1) {
+        if (!lastMessage?.editing) {
+          createNewMessage();
+        } else {
+          updateMessage(lastMessage.id, { visible: true });
+        }
       }
     };
 
@@ -42,9 +48,9 @@
 </script>
 
 <div class="bubble-container" dir={$options.dir}>
-  <div class="bubbles" bind:this={bubbles}>
+  <div class="bubbles">
     {#each $messages as message (message.id)}
-      <Bubble editable={message.editing} />
+      <Bubble editable={message.editing} visible={message.visible} />
     {/each}
   </div>
 </div>

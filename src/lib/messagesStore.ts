@@ -3,9 +3,12 @@ import { get, writable } from "svelte/store";
 export type Message = {
   id: number;
   editing: boolean;
+  visible: boolean;
 };
 
-const messages = writable<Message[]>([]);
+const messages = writable<Message[]>([
+  { editing: true, id: +Date.now(), visible: false },
+]);
 
 function updateMessage(id: number, update: Partial<Message>) {
   messages.update((messages) => {
@@ -24,16 +27,12 @@ function createNewMessage() {
   if (lastMessage?.editing) return;
 
   messages.update((messages) => {
-    return [...messages, { editing: true, id: +Date.now() }];
+    return [...messages, { editing: true, id: +Date.now(), visible: false }];
   });
 }
 
 function shiftMessages() {
   messages.update((messages) => messages.slice(1));
-}
-
-function removeLastMessage() {
-  messages.update((messages) => messages.slice(0, -1));
 }
 
 function getLastMessage() {
@@ -46,5 +45,4 @@ export {
   createNewMessage,
   getLastMessage,
   shiftMessages,
-  removeLastMessage,
 };
