@@ -1,0 +1,9 @@
+:root {
+  font-family: "Cairo", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #00ff00;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
