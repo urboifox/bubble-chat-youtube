@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { blur, slide } from "svelte/transition";
+  import { fade, slide } from "svelte/transition";
   import { shiftMessages } from "./messagesStore";
   import { options } from "./optionsStore";
 
@@ -23,7 +23,7 @@
   data-rtl={$options.dir === "rtl"}
   class="bubble"
   class:visible
-  out:blur={{ duration: 1000 }}
+  out:fade
   in:slide
   contenteditable={editable}
   spellcheck={false}
@@ -40,7 +40,7 @@
   .bubble {
     background-color: #fff;
     position: relative;
-    color: #000;
+    color: #111;
     width: max-content;
     max-width: 500px;
     border-radius: 0.6rem;
